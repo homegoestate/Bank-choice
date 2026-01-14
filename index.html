@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宏國地政 | 易丞地政 - 旗艦智慧入口</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#4fd1c5', // Teal-400
+                            DEFAULT: '#38b2ac', // Teal-500
+                            dark: '#319795', // Teal-600
+                            accent: '#2c7a7b' // Teal-700
+                        },
+                        glass: {
+                            100: 'rgba(255, 255, 255, 0.1)',
+                            border: 'rgba(255, 255, 255, 0.4)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(189,100%,56%,0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(168,100%,60%,0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(189,100%,56%,0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(168,100%,60%,0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+            background-size: cover;
+            color: #1f2937;
+            /* Prevent text selection to protect content */
+            user-select: none; 
+            -webkit-user-select: none;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .glass-btn {
+            background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(56, 178, 172, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .glass-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(56, 178, 172, 0.4);
+        }
+
+        /* Primary Action Button Style */
+        .btn-primary-action {
+            background: linear-gradient(90deg, #319795 0%, #2c7a7b 100%);
+            color: white;
+            box-shadow: 0 2px 10px rgba(49, 151, 149, 0.3);
+            border: 1px solid transparent;
+        }
+        .btn-primary-action:hover {
+            background: linear-gradient(90deg, #2c7a7b 0%, #234e52 100%);
+            box-shadow: 0 4px 15px rgba(49, 151, 149, 0.4);
+        }
+
+        /* Secondary Link Style */
+        .btn-secondary-link {
+            background: rgba(255,255,255,0.6);
+            color: #4a5568;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .btn-secondary-link:hover {
+            background: white;
+            color: #319795;
+            border-color: #319795;
+        }
+
+        /* Floating Social Dock Styles */
+        .social-dock-btn {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Tooltip Animation */
+        .social-tooltip {
+            position: absolute;
+            right: 120%;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            background: rgba(31, 41, 55, 0.9);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .social-dock-btn:hover .social-tooltip {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .social-dock-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(56, 178, 172, 0.5); border-radius: 4px; }
+        
+        .chart-container { position: relative; width: 100%; height: 300px; max-width: 100%; }
+    </style>
+    
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) { return false; } // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } // Ctrl+Shift+I
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } // Ctrl+Shift+C
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } // Ctrl+Shift+J
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } // Ctrl+U
+        }
+    </script>
+</head>
+<body class="antialiased min-h-screen">
+    
+    <div id="app">
+        
+        <aside class="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
+            <a href="https://line.me/R/ti/p/@604gpqef" target="_blank" class="social-dock-btn w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#06C755] text-white flex items-center justify-center shadow-lg shadow-green-500/30 border-2 border-white/50">
+                <i class="ph ph-chat-circle-dots text-2xl md:text-3xl"></i>
+                <span class="social-tooltip">預約諮詢 (官方號)</span>
+            </a>
+
+            <a href="https://line.me/ti/g2/aVklWxyLP1RtfstQsslGQOlP4KViuFI7PPucdQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" class="social-dock-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-[#06C755] flex items-center justify-center shadow-md border border-gray-100">
+                <i class="ph ph-users-three text-xl md:text-2xl"></i>
+                <span class="social-tooltip">加入社群</span>
+            </a>
+
+            <a href="https://www.facebook.com/" target="_blank" class="social-dock-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-[#1877F2] flex items-center justify-center shadow-md border border-gray-100">
+                <i class="ph ph-facebook-logo text-xl md:text-2xl"></i>
+                <span class="social-tooltip">Facebook 粉絲專頁</span>
+            </a>
+
+            <a href="https://www.youtube.com/@ycl_real_estate8888" target="_blank" class="social-dock-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-[#FF0000] flex items-center justify-center shadow-md border border-gray-100">
+                <i class="ph ph-youtube-logo text-xl md:text-2xl"></i>
+                <span class="social-tooltip">YouTube 頻道</span>
+            </a>
+
+            <a href="https://www.homegoycl.com.tw/" target="_blank" class="social-dock-btn w-10 h-10 md:w-12 md:h-12 rounded-full bg-white text-gray-600 flex items-center justify-center shadow-md border border-gray-100">
+                <i class="ph ph-globe text-xl md:text-2xl"></i>
+                <span class="social-tooltip">官方網站</span>
+            </a>
+        </aside>
+
+        <nav class="fixed w-full z-40 transition-all duration-300" :class="{'glass-panel py-3': scrolled, 'bg-transparent py-5': !scrolled}">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white shadow-lg">
+                        <i class="ph ph-house-line text-2xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-xl font-bold text-gray-800 tracking-tight leading-none">宏國地政 | 易丞地政</h1>
+                        <span class="text-xs text-gray-500 font-medium tracking-wider mt-0.5">專業不動產稅務規劃</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-600">
+                    <a href="#tools" class="hover:text-brand transition-colors">智慧試算</a>
+                    <a href="#strategy" class="hover:text-brand transition-colors">趨勢分析</a>
+                    <a href="#trust" class="hover:text-brand transition-colors">防詐專區</a>
+                    <a href="https://line.me/R/ti/p/@604gpqef" target="_blank" class="glass-btn px-5 py-2 rounded-full font-semibold flex items-center gap-2">
+                        <i class="ph ph-chat-circle-dots text-lg"></i>
+                        預約諮詢
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <header class="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+            <div class="max-w-5xl mx-auto text-center relative z-10">
+                <span class="inline-block py-1 px-3 rounded-full bg-teal-50 border border-teal-100 text-teal-600 text-xs font-bold tracking-widest uppercase mb-4 shadow-sm">
+                    2026 數位轉型戰略
+                </span>
+                <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+                    您的不動產 <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500">智慧管家</span>
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    透過大數據試算與稅務規劃，為您守護每一分資產。從重購退稅到房地合一，我們提供最精準的線上評估工具。
+                </p>
+
+                <div class="glass-panel p-2 rounded-3xl max-w-3xl mx-auto shadow-xl inline-flex flex-wrap justify-center gap-2">
+                    <button 
+                        v-for="role in roles" 
+                        :key="role.id"
+                        @click="currentRole = role.id"
+                        class="px-6 py-3 rounded-2xl text-sm md:text-base font-medium transition-all duration-200 flex items-center gap-2"
+                        :class="currentRole === role.id ? 'bg-white text-brand shadow-md' : 'text-gray-500 hover:bg-white/50'"
+                    >
+                        <i :class="['ph', role.icon, 'text-lg']"></i>
+                        {{ role.label }}
+                    </button>
+                </div>
+            </div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-teal-200/30 to-blue-200/30 rounded-full blur-3xl -z-10 animate-pulse"></div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+            
+            <section id="tools" class="mb-20">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">智慧試算工具</h3>
+                        <p class="text-gray-500 mt-1">針對您的需求量身打造的即時分析系統</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div v-for="tool in filteredTools" :key="tool.id" class="glass-card rounded-3xl p-6 flex flex-col h-full group relative overflow-hidden">
+                        
+                        <div class="flex items-start justify-between mb-4 relative z-10">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-sm border border-gray-100 flex items-center justify-center text-brand text-2xl">
+                                <i :class="['ph', tool.icon]"></i>
+                            </div>
+                            <span v-if="tool.badge" class="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-xs font-bold border border-red-100">
+                                {{ tool.badge }}
+                            </span>
+                        </div>
+
+                        <div class="flex-1 relative z-10">
+                            <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-brand transition-colors">{{ tool.title }}</h4>
+                            <p class="text-sm text-gray-500 leading-relaxed mb-4">{{ tool.desc }}</p>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-100/50 flex flex-col gap-3 relative z-10">
+                            <div v-for="(link, index) in tool.links" :key="index">
+                                <a :href="link.url" target="_blank" 
+                                   class="flex items-center justify-between w-full p-3 rounded-xl transition-all duration-300 group/link"
+                                   :class="index === 0 ? 'btn-primary-action' : 'btn-secondary-link hover:bg-white/80'">
+                                    
+                                    <span class="text-sm font-bold flex items-center gap-2">
+                                        <i class="ph ph-calculator text-lg" :class="index === 0 ? 'text-white' : 'text-brand'"></i>
+                                        {{ link.label }}
+                                    </span>
+                                    <i class="ph ph-arrow-right" :class="index === 0 ? 'text-white' : 'text-gray-400 group-hover/link:text-brand'"></i>
+                                </a>
+                            </div>
+                            
+                            <div v-if="tool.videos && tool.videos.length > 0" class="mt-2">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">相關影音</p>
+                                <a v-for="(video, vIndex) in tool.videos" :key="vIndex" :href="video.url" target="_blank" class="flex items-center gap-2 p-2 rounded-xl hover:bg-red-50/50 group/video transition-colors">
+                                    <div class="w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center text-xs">
+                                        <i class="ph ph-play-fill"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-600 group-hover/video:text-red-600 truncate">{{ video.label || '觀看教學影片' }}</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-teal-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="strategy" class="glass-panel rounded-[2.5rem] p-8 md:p-12 mb-20 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-100/30 rounded-full blur-3xl -z-10"></div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-brand font-bold tracking-wider text-sm uppercase mb-2 block">Data Insights</span>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-6">為什麼選擇線上試算？</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-white/60 flex items-center justify-center text-brand shrink-0">
+                                    <i class="ph ph-magnet text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-800">高價值磁鐵效應</h4>
+                                    <p class="text-gray-600 text-sm mt-1">
+                                        試算工具利用使用者的「避險心理」，有效提升網站停留時間 (Dwell Time)，是我們最強大的客戶篩選器。
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-white/60 flex items-center justify-center text-blue-500 shrink-0">
+                                    <i class="ph ph-device-mobile text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-800">行動優先戰略</h4>
+                                    <p class="text-gray-600 text-sm mt-1">
+                                        超過 70% 的房產搜尋來自手機。我們的系統全面優化行動體驗，確保您隨時隨地都能掌握資產狀況。
+                                    </p>
+                                </div>
+                            </div>
+
+                             <div class="p-4 bg-white/40 rounded-2xl border border-white/50 mt-4">
+                                <h5 class="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                                    <i class="ph ph-lightbulb text-yellow-500"></i>
+                                    2026 未來展望
+                                </h5>
+                                <p class="text-sm text-gray-600">
+                                    我們計畫將試算結果分為「簡易版」與「詳細版」，透過訂閱機制提供更深度的專業報告，建立長期服務關係。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6">
+                         <div class="bg-white/60 backdrop-blur-sm p-6 rounded-3xl shadow-sm border border-white/50">
+                            <h4 class="text-sm font-bold text-gray-500 uppercase mb-4 text-center">使用者裝置分佈 (Mobile First)</h4>
+                            <div class="chart-container mx-auto" style="height: 250px;">
+                                <canvas id="deviceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="trust" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 text-white relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-6 backdrop-blur-md">
+                            <i class="ph ph-shield-check text-2xl text-teal-400"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">信任與安全</h3>
+                        <p class="text-gray-300 mb-6 text-sm leading-relaxed">
+                            我們特別推廣「地籍異動即時通」與「稅籍異動即時通」。我們不僅在乎您的稅務規劃，更在乎您的資產安全。
+                        </p>
+                        <a href="https://www.youtube.com/watch?si=YT-3uB96-9t8KuYk&v=5KWCcvU4x28&feature=youtu.be" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-teal-400 hover:text-teal-300 transition-colors p-2 rounded-lg hover:bg-white/10">
+                            <span>觀看防詐騙宣導影片</span>
+                            <i class="ph ph-arrow-right"></i>
+                        </a>
+                    </div>
+                    <i class="ph ph-lock-key absolute -bottom-4 -right-4 text-9xl text-white/5 rotate-12 group-hover:scale-110 transition-transform duration-500"></i>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8 flex flex-col justify-center items-center text-center border-2 border-dashed border-gray-300 hover:border-brand/50 transition-colors cursor-pointer group relative">
+                    <div class="w-16 h-16 rounded-full bg-teal-50 text-brand flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-chat-circle-text text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">需要專人協助？</h3>
+                    <p class="text-gray-500 text-sm mb-6 max-w-xs">
+                        試算結果太複雜？讓專業代書為您解析細節。
+                    </p>
+                    <a href="https://line.me/R/ti/p/@604gpqef" target="_blank" class="glass-btn px-8 py-3 rounded-xl font-bold w-full max-w-xs flex items-center justify-center gap-2">
+                        <i class="ph ph-line-logo text-xl"></i>
+                        加入 LINE 官方帳號
+                    </a>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="bg-white/50 backdrop-blur-lg border-t border-gray-200 mt-12 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-gray-900 text-lg">宏國地政 | 易丞地政</h4>
+                    <p class="text-xs text-gray-500 mt-2">© 2026 Home Go Estate. All Rights Reserved.</p>
+                </div>
+                <div class="text-sm text-gray-500 flex gap-4">
+                    <a href="https://www.homegoycl.com.tw/" target="_blank" class="hover:text-brand">官方網站</a>
+                    <a href="#tools" class="hover:text-brand">試算工具</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref, computed, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const scrolled = ref(false);
+                const currentRole = ref('all');
+
+                // Roles for Contextual Nav
+                const roles = [
+                    { id: 'all', label: '全部顯示', icon: 'ph-squares-four' },
+                    { id: 'seller', label: '我要賣屋', icon: 'ph-house-line' },
+                    { id: 'buyer', label: '我要買屋', icon: 'ph-shopping-cart' },
+                    { id: 'heir', label: '遺產繼承', icon: 'ph-users-three' },
+                ];
+
+                // Data from Source
+                const tools = [
+                    {
+                        id: 1,
+                        title: '重購退稅試算',
+                        desc: '賣大買小或賣小買大？30秒計算您能退多少稅。包含詳細的自我檢測站。',
+                        icon: 'ph-arrows-left-right',
+                        badge: '熱門',
+                        roles: ['seller', 'buyer'],
+                        links: [
+                            { label: '開始試算', url: 'https://yangceo-taiwan.github.io/Land-value-added-tax-and-property-tax-refund-upon-repurchase/' }
+                        ],
+                        videos: [
+                            { label: '觀看解說影片', url: 'https://yangceo-taiwan.github.io/-Property-tax/' }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: '房地合一稅 (新舊制)',
+                        desc: '系統自動判斷適用新制或舊制，並提供精準稅額計算。',
+                        icon: 'ph-files',
+                        badge: '必備',
+                        roles: ['seller'],
+                        links: [
+                            { label: '新舊制判斷', url: 'https://yangceo-taiwan.github.io/Property-tax-test/' },
+                            { label: '舊制計算', url: 'https://yangceo-taiwan.github.io/test-property-transaction-income-tax/' },
+                            { label: '新制計算', url: 'https://homegoestate.github.io/test-Property-tax/' }
+                        ],
+                        videos: [
+                            { label: '新舊制差異短片', url: 'https://www.youtube.com/shorts/RUsHOqN1jRI?si=sW6Mu1tqxaRsdo3P' },
+                            { label: '詳細解說', url: 'https://yangceo-taiwan.github.io/-Property-tax/' }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: '貸款收支比評估',
+                        desc: '輸入收入與支出，預測銀行放款成數與利率條件。避免簽約後貸不到款的風險。',
+                        icon: 'ph-bank',
+                        roles: ['buyer'],
+                        links: [
+                            { label: '收支比計算', url: 'https://yangceo-taiwan.github.io/loan-forecast/' }
+                        ],
+                        videos: [
+                            { label: '貸款知識影音', url: 'https://yangceo-taiwan.github.io/loan/' },
+                            { label: '短片教學', url: 'https://www.youtube.com/shorts/55izyPJEq4g?si=_wjeOIN628Jj2yBU' }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        title: '賣方實拿金額預估',
+                        desc: '扣除各項稅費、仲介費後，精算您實際落袋的現金金額。',
+                        icon: 'ph-money',
+                        roles: ['seller'],
+                        links: [
+                            { label: '計算實拿金額', url: 'https://yangceo-taiwan.github.io/Seller-s-actual-amount-received-estimated/' }
+                        ],
+                        videos: []
+                    },
+                    {
+                        id: 5,
+                        title: '遺產稅試算',
+                        desc: '預先規劃身後事，計算遺產稅額及扣除額，保障家族資產傳承。',
+                        icon: 'ph-scroll',
+                        roles: ['heir'],
+                        links: [
+                            { label: '遺產稅議題', url: 'https://yangceo-taiwan.github.io/inheritance-tax-issues/' }
+                        ],
+                        videos: []
+                    },
+                    {
+                        id: 6,
+                        title: '土地坪效預估',
+                        desc: '針對土地開發價值進行快速評估，計算最大可建坪數與效益。',
+                        icon: 'ph-buildings',
+                        roles: ['buyer', 'seller'],
+                        links: [
+                            { label: '坪效評估', url: 'https://yangceo-taiwan.github.io/Land-efficiency-assessment/' }
+                        ],
+                        videos: []
+                    }
+                ];
+
+                const filteredTools = computed(() => {
+                    if (currentRole.value === 'all') return tools;
+                    return tools.filter(tool => tool.roles.includes(currentRole.value));
+                });
+
+                const initCharts = () => {
+                    const ctxDevice = document.getElementById('deviceChart').getContext('2d');
+                    new Chart(ctxDevice, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['手機/平板 (70%)', '桌機/筆電 (30%)'],
+                            datasets: [{
+                                data: [70, 30],
+                                backgroundColor: [
+                                    'rgba(56, 178, 172, 0.8)',
+                                    'rgba(160, 174, 192, 0.5)'
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 20,
+                                        font: { family: "'Noto Sans TC', sans-serif" }
+                                    }
+                                }
+                            },
+                            cutout: '75%'
+                        }
+                    });
+                };
+
+                onMounted(() => {
+                    window.addEventListener('scroll', () => {
+                        scrolled.value = window.scrollY > 50;
+                    });
+                    initCharts();
+                });
+
+                return {
+                    scrolled,
+                    currentRole,
+                    roles,
+                    filteredTools
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
