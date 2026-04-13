@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>宏國地政、易丞地政 - 房貸智囊團</title>
     
-    <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 簡易防護與樣式 -->
     <style>
         body { -webkit-user-select: none; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         input, textarea, select { -webkit-user-select: text; user-select: text; }
@@ -63,18 +61,29 @@
             ArrowDownCircle: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" x2="12" y1="8" y2="16"/></svg>,
             Menu: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>,
             X: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
-            Building2: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+            Building2: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>,
+            MessageSquare: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+            Send: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>,
+            Edit2: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>,
+            PlusCircle: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
         };
 
         const { 
             Calculator, BookOpen, Settings, Save, RotateCcw, 
             CheckCircle, AlertCircle, Briefcase, Home, DollarSign, 
             TrendingUp, Unlock, Users, FileText, ArrowDownCircle, 
-            Menu, X, Building2
+            Menu, X, Building2, MessageSquare, Send, Edit2, PlusCircle
         } = Icons;
 
-        // --- 資料庫 ---
+        // --- 資料庫 (完整還原版) ---
         const INITIAL_DATA = {
+            // KYC 首購推薦判斷用
+            firstTime: [
+                { name: "台銀/公股", highlight: "新青安專案", rules: ["適用名下無房產者", "利率極低但審核最嚴格", "貸款年限最長40年"] },
+                { name: "中信", highlight: "優質首購專案", rules: ["2.6%起", "審核速度快", "首購族主力推薦銀行"] },
+                { name: "富邦", highlight: "專案彈性", rules: ["首購2.7-3%", "對於保人收支比認列寬鬆"] },
+                { name: "元大", highlight: "首購友善", rules: ["利率2.6%起", "額度彈性佳"] }
+            ],
             selfEmployed: [
                 { name: "富邦", highlight: "絕對不看薪資", rules: ["獨資看401，抓12%當所得(7成)", "走資產(8成)：基金、股票、儲蓄險", "執行業務所得(8成)：看扣除成本後所得，無列舉打7折"] },
                 { name: "京城", highlight: "分有/無統編認定", rules: ["有統編(法人)：看損益表淨利", "有統編(行號)：看405表營收", "無統編(攤販)：看存摺固定入帳", "資產僅作參考不列收支比"] },
@@ -142,6 +151,17 @@
                 { name: "台中商銀", rule: "收支比>100%", calc: "借保人收支合併計算" },
                 { name: "聯邦", rule: "收支比70%", calc: "保人負債需一併計算，限親屬" },
                 { name: "華南", rule: "級距式", calc: "合計月收2萬貸200萬，3萬貸300萬..." }
+            ],
+            // 估價回覆專用銀行名單 (指定 8 家最新格式)
+            appraisalBanks: [
+                { name: "台銀", rate: "（首購2.585%-3.089%）" },
+                { name: "富邦", rate: "（首購：2.65%起）" },
+                { name: "凱基", rate: "(首購：首購利率2.6%，綁約3年)" },
+                { name: "三信商銀", rate: "(首購：首購利率2.7%，綁約3年)" },
+                { name: "中信", rate: "（首購：2.6%起）" },
+                { name: "上海", rate: "(首購：利率2.65%起)" },
+                { name: "元大", rate: "(首購：利率2.6%起)" },
+                { name: "玉山", rate: "(首購：利率2.6%起)" }
             ]
         };
 
@@ -150,11 +170,12 @@
 
         // --- 主程式 ---
         function App() {
-            const [activeTab, setActiveTab] = useState('assessment');
+            const [activeTab, setActiveTab] = useState('appraisal'); 
             const [bankData, setBankData] = useState(INITIAL_DATA);
             const [importText, setImportText] = useState('');
             const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+            // KYC 評估的 State
             const [formData, setFormData] = useState({
                 price: 1800,
                 loanAmount: 1440, 
@@ -173,210 +194,276 @@
                 needsCashFlow: false
             });
 
-            // 初始化與 LocalStorage
+            // 估價回覆產生器的 State
+            const [appraisalRawText, setAppraisalRawText] = useState('');
+            const [appraisalForm, setAppraisalForm] = useState({
+                dateId: (() => {
+                    const d = new Date();
+                    return `${d.getFullYear() - 1911}${(d.getMonth() + 1).toString().padStart(2, '0')}${d.getDate().toString().padStart(2, '0')}`;
+                })(),
+                projectName: '案件名稱',
+                clientName: '',
+                address: '',
+                price: '',
+                priceType: '開價', 
+                selectedBanks: [] 
+            });
+
+            // 預覽編輯器 State
+            const [previewText, setPreviewText] = useState('');
+            
+            // 快速編輯模式狀態
+            const [isEditingRates, setIsEditingRates] = useState(false);
+
+            // 初始化與 LocalStorage (智能縫合邏輯)
             useEffect(() => {
                 const savedData = localStorage.getItem('mortgageBankData_PRO');
                 if (savedData) {
-                    setBankData(JSON.parse(savedData));
+                    try {
+                        const parsedData = JSON.parse(savedData);
+                        
+                        // 1. 處理估價銀行的縫合 (保留使用者自訂銀行，覆蓋預設八家銀行)
+                        let mergedAppraisalBanks = [];
+                        if (parsedData.appraisalBanks) {
+                            const initialNames = INITIAL_DATA.appraisalBanks.map(b => b.name);
+                            const userAddedBanks = parsedData.appraisalBanks.filter(b => !initialNames.includes(b.name));
+                            mergedAppraisalBanks = [...INITIAL_DATA.appraisalBanks, ...userAddedBanks];
+                        } else {
+                            mergedAppraisalBanks = INITIAL_DATA.appraisalBanks;
+                        }
+                        parsedData.appraisalBanks = mergedAppraisalBanks;
+                        
+                        // 2. 處理其它被誤刪的陣列 (確保新版也有完整結構)
+                        if (!parsedData.firstTime) parsedData.firstTime = INITIAL_DATA.firstTime;
+                        if (!parsedData.selfEmployed) parsedData.selfEmployed = INITIAL_DATA.selfEmployed;
+                        if (!parsedData.guarantor) parsedData.guarantor = INITIAL_DATA.guarantor;
+                        if (!parsedData.storefront) parsedData.storefront = INITIAL_DATA.storefront;
+                        if (!parsedData.combo) parsedData.combo = INITIAL_DATA.combo;
+                        if (!parsedData.cashRefinance) parsedData.cashRefinance = INITIAL_DATA.cashRefinance;
+                        if (!parsedData.renovation) parsedData.renovation = INITIAL_DATA.renovation;
+                        if (!parsedData.noTieIn) parsedData.noTieIn = INITIAL_DATA.noTieIn;
+
+                        setBankData(parsedData);
+                    } catch(e) {
+                        console.error("解析存檔失敗", e);
+                    }
                 }
             }, []);
 
+            // 每次表單或選擇的銀行改變時，自動重新生成預覽文字
+            useEffect(() => {
+                let text = `${appraisalForm.dateId}${appraisalForm.projectName}*${appraisalForm.clientName}\n\n`;
+                text += `📍標的位置：${appraisalForm.address}\n\n`;
+                text += `💰${appraisalForm.priceType}： ${appraisalForm.price}\n\n`;
+
+                let counter = 1;
+                bankData.appraisalBanks.forEach(bankInfo => {
+                    if (appraisalForm.selectedBanks.includes(bankInfo.name)) {
+                        text += `${counter}、${bankInfo.name}：\n${bankInfo.rate}\n\n`;
+                        counter++;
+                    }
+                });
+
+                text += `✨以上為銀行初估額度，並非最終額度。\n`;
+                text += `客戶條件、收支比、地緣性、實價登錄價格及成交金額會影響預估金額，要等正式送件方可確認。如有問題洽  \n`;
+                text += `☀️宏國地政｜易丞地政\n`;
+                text += `☎️06-258-2589`;
+
+                setPreviewText(text);
+            }, [appraisalForm, bankData.appraisalBanks]);
+
+            // 儲存資料到 LocalStorage
             const handleSaveData = () => {
                 localStorage.setItem('mortgageBankData_PRO', JSON.stringify(bankData));
                 alert('資料庫已更新！');
             };
 
             const handleResetData = () => {
-                if(window.confirm('確定要重置回預設資料嗎？')) {
+                if(window.confirm('確定要重置回預設資料嗎？此動作將清除您自訂新增的銀行。')) {
                     setBankData(INITIAL_DATA);
                     localStorage.removeItem('mortgageBankData_PRO');
                 }
             };
 
-            // 輸入處理 & 連動計算
+            // --- 估價回覆產生器邏輯 ---
+            const handleParseAppraisalText = () => {
+                if (!appraisalRawText.trim()) return;
+                let newForm = { ...appraisalForm };
+                const text = appraisalRawText;
+                
+                const extractName = text.match(/(?:客戶姓名|名稱|姓名)[\*：:\s]+([^\n]*)/);
+                if (extractName) newForm.clientName = extractName[1].trim();
+
+                const extractAddress = text.match(/(?:標的位置|標的資訊|地址|位置)[\*：:\s]+([^\n]*)/);
+                if (extractAddress) newForm.address = extractAddress[1].trim();
+
+                if (text.includes('成交價')) newForm.priceType = '成交價';
+                else newForm.priceType = '開價';
+
+                const extractPrice = text.match(/(?:預計成交\/開價|開價|預計成交|成交價|金額)[\*：:\s]+([^\n]*)/);
+                if (extractPrice) newForm.price = extractPrice[1].trim();
+
+                setAppraisalForm(newForm);
+            };
+
+            const toggleAppraisalBank = (bankName) => {
+                setAppraisalForm(prev => {
+                    const isSelected = prev.selectedBanks.includes(bankName);
+                    if (isSelected) {
+                        return { ...prev, selectedBanks: prev.selectedBanks.filter(b => b !== bankName) };
+                    } else {
+                        return { ...prev, selectedBanks: [...prev.selectedBanks, bankName] };
+                    }
+                });
+            };
+
+            // 快速編輯模式邏輯 (CRUD)
+            const handleBankEdit = (index, field, value) => {
+                const newData = { ...bankData };
+                newData.appraisalBanks[index][field] = value;
+                setBankData(newData);
+            };
+
+            const handleAddBank = () => {
+                const newData = { ...bankData };
+                newData.appraisalBanks.push({ name: '新銀行', rate: '(首購：...)' });
+                setBankData(newData);
+                setTimeout(() => {
+                    const container = document.getElementById('edit-bank-container');
+                    if(container) container.scrollTop = container.scrollHeight;
+                }, 100);
+            };
+
+            const handleRemoveBank = (index) => {
+                if(window.confirm('確定要刪除這家銀行嗎？')) {
+                    const newData = { ...bankData };
+                    const bankName = newData.appraisalBanks[index].name;
+                    setAppraisalForm(prev => ({
+                        ...prev, 
+                        selectedBanks: prev.selectedBanks.filter(b => b !== bankName)
+                    }));
+                    newData.appraisalBanks.splice(index, 1);
+                    setBankData(newData);
+                }
+            };
+
+            const saveEditedRates = () => {
+                setIsEditingRates(false);
+                localStorage.setItem('mortgageBankData_PRO', JSON.stringify(bankData));
+            };
+
+            // 複製與分享
+            const copyAppraisalReply = () => {
+                navigator.clipboard.writeText(previewText);
+                alert('估價回覆已複製！您可以直接至 LINE 群組貼上。');
+            };
+
+            const handleLineShare = () => {
+                const lineDeepLink = `https://line.me/R/msg/text/?${encodeURIComponent(previewText)}`;
+                window.open(lineDeepLink, '_blank');
+            };
+
+            // --- 原有 KYC 評估輸入處理 & 連動計算 ---
             const handleInputChange = (e) => {
                 const { name, value, type, checked } = e.target;
-                
                 if (name === 'price') {
                     const priceVal = parseFloat(value) || 0;
-                    setFormData(prev => ({
-                        ...prev,
-                        price: value,
-                        loanAmount: Math.round(priceVal * 0.8) // 預設8成
-                    }));
+                    setFormData(prev => ({ ...prev, price: value, loanAmount: Math.round(priceVal * 0.8) }));
                 } else if (name === 'monthlyIncome') {
                     const monthlyVal = parseFloat(value) || 0;
-                    setFormData(prev => ({
-                        ...prev,
-                        monthlyIncome: value,
-                        annualIncome: Math.round(monthlyVal * 12) // 預設12倍
-                    }));
+                    setFormData(prev => ({ ...prev, monthlyIncome: value, annualIncome: Math.round(monthlyVal * 12) }));
                 } else {
-                    setFormData(prev => ({
-                        ...prev,
-                        [name]: type === 'checkbox' ? checked : value
-                    }));
+                    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
                 }
             };
 
             const toggleDebt = (debtType) => {
                 setFormData(prev => {
                     const exists = prev.debts.includes(debtType);
-                    if (exists) {
-                        return { ...prev, debts: prev.debts.filter(d => d !== debtType) };
-                    } else {
-                        return { ...prev, debts: [...prev.debts, debtType] };
-                    }
+                    if (exists) return { ...prev, debts: prev.debts.filter(d => d !== debtType) };
+                    else return { ...prev, debts: [...prev.debts, debtType] };
                 });
             };
 
-            // 智慧解析
             const handleParseText = () => {
                 if(!importText.trim()) return;
 
                 let newForm = { ...formData };
-                newForm.debts = []; // 重置負債
-                
+                newForm.debts = []; 
                 const text = importText;
 
-                // 輔助函式：支援「Label: Value」或「Qn... \n A: Value」格式
-                const extract = (regex) => {
+                const extractValue = (regex) => {
                     const match = text.match(regex);
                     return match ? match[1].trim() : null;
                 };
 
-                // 針對 Q&A 格式的抽取器
-                const extractQA = (qNum) => {
-                    // 尋找 Q(數字)... 換行 A(冒號)... 的模式
-                    const regex = new RegExp(`Q${qNum}[^\\n]*\\n+A[：:]\\s*(.*)`);
-                    const match = text.match(regex);
-                    return match ? match[1].trim() : null;
-                };
+                const jobStr = extractValue(/(?:職業|Q1)[：:\s]*([^\n]+)/) || text;
+                if (jobStr.includes('受薪') || jobStr.includes('上班')) newForm.job = '一般上班族';
+                else if (jobStr.includes('自營') || jobStr.includes('老闆') || jobStr.includes('負責')) newForm.job = '公司負責人';
+                else if (jobStr.includes('自由') || jobStr.includes('SOHO')) newForm.job = '自由業';
 
-                // --- 1. 價格 ---
-                // 優先抓取上方總表，若無則抓 Q&A (雖然通常價格在最上面)
-                let priceRaw = extract(/[預成][計交]價格[：:]\s*([\d,]+)/);
-                if(priceRaw) {
-                    let p = parseFloat(priceRaw.replace(/,/g, ''));
-                    // 單位判斷：若大於 10000 (如 13,900,000)，自動除以一萬
-                    if (p > 10000) p = p / 10000;
-                    newForm.price = p;
-                    newForm.loanAmount = Math.round(p * 0.8);
+                const assetStr = extractValue(/(?:房產|資產|Q3)[：:\s]*([^\n]+)/) || text;
+                if (assetStr.includes('首購') || assetStr.includes('無')) newForm.assets = '無房屋';
+
+                const ageRaw = extractValue(/(?:年齡|Q4)[：:\s]*(\d+)/);
+                if (ageRaw) newForm.age = ageRaw;
+
+                const incomeRaw = extractValue(/(?:月收|月收入|Q5)[：:\s]*([\d,]+)/);
+                if (incomeRaw) {
+                    let inc = parseFloat(incomeRaw.replace(/,/g, ''));
+                    if (inc >= 1000) inc = inc / 10000;
+                    newForm.monthlyIncome = inc;
+                    newForm.annualIncome = inc * 12;
                 }
 
-                // --- 2. 欲貸金額 ---
-                let loanRaw = extract(/[欲貸]貸款金額[：:]\s*([\d,]*)/); // 可能為空
-                if(loanRaw && loanRaw.trim() !== '') {
+                const loanRaw = extractValue(/(?:想貸金額|貸款金額|欲貸金額)[：:\s]*([\d,]+)/);
+                if (loanRaw) {
                     let l = parseFloat(loanRaw.replace(/,/g, ''));
                     if (l > 10000) l = l / 10000;
                     newForm.loanAmount = l;
                 }
 
-                // --- 3. 職業 (Q1) ---
-                const jobRaw = extractQA(1);
-                if(jobRaw) {
-                    if(jobRaw.includes('商') || jobRaw.includes('自營') || jobRaw.includes('老闆') || jobRaw.includes('負責人')) {
-                        newForm.job = '公司負責人'; // 或自由業，視為自營商類別
-                    } else if (jobRaw.includes('自由') || jobRaw.includes('SOHO')) {
-                        newForm.job = '自由業';
-                    } else if (jobRaw.includes('家管')) {
-                        newForm.job = '家管';
-                    } else {
-                        newForm.job = '一般上班族';
-                    }
+                const priceRaw = extractValue(/(?:預計成交|開價|價格)[：:\s]*([\d,]+)/);
+                if(priceRaw) {
+                    let p = parseFloat(priceRaw.replace(/,/g, ''));
+                    if (p > 10000) p = p / 10000;
+                    newForm.price = p;
+                    if (!loanRaw) newForm.loanAmount = Math.round(p * 0.8);
                 }
 
-                // --- 4. 年齡 (Q2) ---
-                const ageRaw = extractQA(2);
-                if(ageRaw) {
-                    const ageMatch = ageRaw.match(/(\d+)/);
-                    if(ageMatch) newForm.age = ageMatch[1];
+                const debtRaw = extractValue(/(?:月負債|負債|Q6)[：:\s]*([\d,]+)/);
+                if (debtRaw) {
+                    newForm.debts = ['信貸'];
+                    let d = parseFloat(debtRaw.replace(/,/g, ''));
+                    if (d > 1000) d = d / 10000; 
+                    newForm.debtAmount = Math.round(d * 80); 
                 }
-
-                // --- 5. 月收 (Q3) ---
-                const monthlyRaw = extractQA(3);
-                if(monthlyRaw) {
-                    // 處理範圍 "6-7萬" -> 取平均 6.5
-                    const rangeMatch = monthlyRaw.match(/(\d+)[\-~](\d+)/);
-                    if(rangeMatch) {
-                        const avg = (parseFloat(rangeMatch[1]) + parseFloat(rangeMatch[2])) / 2;
-                        newForm.monthlyIncome = avg;
-                    } else {
-                        const singleMatch = monthlyRaw.match(/(\d+)/);
-                        if(singleMatch) newForm.monthlyIncome = parseFloat(singleMatch[1]);
-                    }
-                }
-
-                // --- 6. 年收 (Q5) ---
-                const annualRaw = extractQA(5);
-                if(annualRaw) {
-                     const rangeMatch = annualRaw.match(/(\d+)[\-~](\d+)/);
-                    if(rangeMatch) {
-                        const avg = (parseFloat(rangeMatch[1]) + parseFloat(rangeMatch[2])) / 2;
-                        newForm.annualIncome = avg;
-                    } else {
-                        // 移除 NTD, comma
-                        const cleanStr = annualRaw.replace(/,/g, '');
-                        const singleMatch = cleanStr.match(/(\d+)/);
-                        if(singleMatch) {
-                            let y = parseFloat(singleMatch[1]);
-                            // 判斷是否為元單位 (如 1,200,000)
-                            if (y > 10000) y = y / 10000;
-                            newForm.annualIncome = y;
-                        }
-                    }
-                } else if (newForm.monthlyIncome) {
-                    // 若 Q5 沒抓到，用月收推算
-                    newForm.annualIncome = newForm.monthlyIncome * 12;
-                }
-
-                // --- 7. 負債 (Q6 & Q7) ---
-                const debtQ6 = extractQA(6);
-                const debtQ7 = extractQA(7);
-                const debtStr = (debtQ6 || '') + (debtQ7 || '');
-                
-                if (debtStr.includes('無') || debtStr.includes('沒有')) {
-                    newForm.debts = [];
-                    newForm.debtAmount = 0;
-                } else {
-                     DEBT_OPTIONS.forEach(opt => {
-                        if(debtStr.includes(opt)) {
-                            if(!newForm.debts.includes(opt)) newForm.debts.push(opt);
-                        }
-                    });
-                    // 嘗試從 Q7 抓金額
-                    const amountMatch = debtStr.match(/(\d+)萬/);
-                    if(amountMatch) newForm.debtAmount = parseFloat(amountMatch[1]);
-                }
-
-                // --- 8. 信用卡 (Q8) ---
-                const ccRaw = extractQA(8);
-                if(ccRaw) newForm.creditCard = ccRaw;
 
                 setFormData(newForm);
-                alert('智慧解析成功！已自動換算單位與計算平均收入。');
+                alert('智慧解析 2.0 執行成功！已自動校正單位並套用特徵識別。');
             };
 
-            // PMT 計算 (本息攤還)
             const calculateMonthlyPayment = () => {
                 if (!formData.loanAmount || formData.loanAmount <= 0) return 0;
-                // 假設年利率 2.2%, 30年 (360期)
-                const principal = formData.loanAmount * 10000; // 轉為元
+                const principal = formData.loanAmount * 10000; 
                 const annualRate = 0.022;
                 const monthlyRate = annualRate / 12;
                 const months = 360;
-
-                // PMT = P * r * (1+r)^n / ((1+r)^n - 1)
                 const pmt = principal * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-                
-                // 轉為 "萬" 顯示
                 return (pmt / 10000).toFixed(2);
             };
 
-            // 推薦邏輯
             const recommendations = useMemo(() => {
                 let recs = [];
-                const { job, propertyType, needsRenovation, purpose, needsNoTieIn } = formData;
+                const { job, assets, propertyType, needsRenovation, purpose, needsNoTieIn } = formData;
+
+                if (assets === '無房屋') {
+                    recs.push({
+                        type: '首購優勢銀行 (標準專案)',
+                        banks: bankData.firstTime,
+                        reason: '經系統判定，客戶具備首購身分，適用各大銀行或新青安之低利優惠專案。'
+                    });
+                }
 
                 if (job === '自由業' || job === '自營商' || job === '老闆' || job === '公司負責人') {
                     recs.push({
@@ -405,7 +492,7 @@
                 if (purpose === '轉增貸' || purpose === '現金買回貸') {
                     recs.push({
                         type: '現金購買再增貸 / 二胎',
-                        banks: bankData.cashRefinance.concat(bankData.combo.filter(b => b.name === '王道' || b.name === '台中商銀')), // 合併顯示
+                        banks: bankData.cashRefinance.concat(bankData.combo.filter(b => b.name === '王道' || b.name === '台中商銀')), 
                         reason: '注意「等待期」限制，部分銀行需持有滿一年或三個月。'
                     });
                 }
@@ -420,12 +507,6 @@
 
                 return recs;
             }, [formData, bankData]);
-
-            const generateCopyText = () => {
-                const text = `【房貸初步評估資料】\n\n🔆預計成交價格：${formData.price}萬\n🔅欲貸款金額：${formData.loanAmount}萬\n\nQ1職業：${formData.job}\nQ2年齡：${formData.age}歲\nQ3月收：${formData.monthlyIncome}萬\nQ4年收：${formData.annualIncome}萬\nQ5資產：${formData.assets}\n\n【負債狀況】\nQ7貸款項目：${formData.debts.join('、') || '無'}\nQ8負債明細：${formData.debtAmount}萬\nQ9信用卡：${formData.creditCard}\nQ10案件類型：${formData.propertyType} / ${formData.purpose}\n${formData.needsRenovation ? '(含裝潢需求)' : ''}\n${formData.needsNoTieIn ? '(希望不綁約)' : ''}\n`;
-                navigator.clipboard.writeText(text);
-                alert('已複製到剪貼簿！');
-            };
 
             // UI Components
             const NavButton = ({ tab, icon: Icon, label }) => (
@@ -459,14 +540,16 @@
                             </button>
                         </div>
                         <nav className="p-4 space-y-2">
-                            <NavButton tab="assessment" icon={Calculator} label="案件評估" />
+                            <NavButton tab="appraisal" icon={MessageSquare} label="估價回覆產生器" />
+                            <NavButton tab="assessment" icon={Calculator} label="客戶 KYC 評估" />
                             <NavButton tab="knowledge" icon={BookOpen} label="銀行方案大全" />
                             <NavButton tab="settings" icon={Settings} label="資料庫管理" />
                         </nav>
                         <div className="p-6 mt-auto hidden md:block">
                             <div className="bg-slate-700 rounded p-3 text-xs text-slate-300">
-                                <p>系統版本：v3.2</p>
-                                <p>Q&A 智慧解析：啟用</p>
+                                <p>系統版本：v5.2 (Nexus)</p>
+                                <p>UI 渲染區塊：已全面修復</p>
+                                <p>銀行增刪 CRUD：已啟動</p>
                             </div>
                         </div>
                     </aside>
@@ -475,7 +558,7 @@
                     <div className="md:hidden bg-slate-800 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-40">
                          <h1 className="font-bold flex items-center gap-2">
                             <Building2 className="w-5 h-5 text-yellow-400" />
-                            宏國、易丞地政
+                            房貸智囊團 Pro
                         </h1>
                         <button onClick={() => setIsMobileMenuOpen(true)}>
                             <Menu size={24} />
@@ -484,27 +567,186 @@
 
                     {/* Main Content */}
                     <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 mobile-nav-fix">
-                        {/* Tab: Assessment */}
+                        
+                        {/* 🌟 Tab: Appraisal Generator (估價回覆產生器) */}
+                        {activeTab === 'appraisal' && (
+                            <div className="max-w-5xl mx-auto space-y-6">
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                                            <MessageSquare className="text-blue-600"/> 群組估價回覆產生器
+                                        </h2>
+                                        <p className="text-sm text-gray-500 mt-1">貼上業務進件訊息，勾選銀行即可一鍵生成公版回覆。</p>
+                                    </div>
+                                    <div className="flex gap-2 w-full md:w-auto">
+                                        <button onClick={copyAppraisalReply} className="flex-1 bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2 text-sm shadow-md font-bold transition">
+                                            <CheckCircle size={18} /> 複製文字
+                                        </button>
+                                        <button onClick={handleLineShare} className="flex-1 bg-[#06C755] hover:bg-[#05b34c] text-white px-5 py-2 rounded-lg flex justify-center items-center gap-2 text-sm shadow-md font-bold transition">
+                                            <Send size={18} /> 一鍵傳送至 LINE
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {/* 左側：資料解析與編輯 */}
+                                    <div className="space-y-4">
+                                        <div className="bg-blue-50 p-4 rounded-xl border border-blue-200 shadow-sm">
+                                            <h3 className="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
+                                                <ArrowDownCircle size={16}/> 1. 貼上群組進件訊息
+                                            </h3>
+                                            <textarea 
+                                                className="w-full p-3 text-sm border border-blue-200 rounded-lg h-32 focus:ring-2 focus:ring-blue-400 mb-2"
+                                                placeholder="請將群組收到的需求完整內容貼上..."
+                                                value={appraisalRawText}
+                                                onChange={(e) => setAppraisalRawText(e.target.value)}
+                                            />
+                                            <button 
+                                                onClick={handleParseAppraisalText}
+                                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-bold shadow transition"
+                                            >
+                                                智能解析內容
+                                            </button>
+                                        </div>
+
+                                        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                                            <h3 className="text-md font-bold mb-4 border-b pb-2 text-slate-700">2. 確認案件資訊</h3>
+                                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                                <div>
+                                                    <label className="block text-xs text-gray-500 mb-1">日期代碼</label>
+                                                    <input type="text" value={appraisalForm.dateId} onChange={(e)=>setAppraisalForm({...appraisalForm, dateId: e.target.value})} className="w-full p-2 border rounded text-sm bg-gray-50 focus:ring-blue-500" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs text-gray-500 mb-1">專案名稱</label>
+                                                    <input type="text" value={appraisalForm.projectName} onChange={(e)=>setAppraisalForm({...appraisalForm, projectName: e.target.value})} className="w-full p-2 border rounded text-sm bg-gray-50 focus:ring-blue-500" />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <label className="block text-xs text-gray-500 mb-1">客戶姓名</label>
+                                                    <input type="text" value={appraisalForm.clientName} onChange={(e)=>setAppraisalForm({...appraisalForm, clientName: e.target.value})} className="w-full p-2 border rounded text-sm bg-yellow-50 focus:ring-blue-500" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs text-gray-500 mb-1">📍標的位置</label>
+                                                    <input type="text" value={appraisalForm.address} onChange={(e)=>setAppraisalForm({...appraisalForm, address: e.target.value})} className="w-full p-2 border rounded text-sm bg-yellow-50 focus:ring-blue-500" />
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <select 
+                                                            value={appraisalForm.priceType} 
+                                                            onChange={(e) => setAppraisalForm({...appraisalForm, priceType: e.target.value})}
+                                                            className="text-xs text-blue-700 border-b border-blue-300 font-bold bg-transparent outline-none cursor-pointer focus:ring-0 pb-0.5"
+                                                        >
+                                                            <option value="開價">💰 開價</option>
+                                                            <option value="成交價">💰 成交價</option>
+                                                        </select>
+                                                    </div>
+                                                    <input type="text" value={appraisalForm.price} onChange={(e)=>setAppraisalForm({...appraisalForm, price: e.target.value})} className="w-full p-2 border rounded text-sm bg-yellow-50 focus:ring-blue-500" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* 右側：銀行挑選與預覽 */}
+                                    <div className="space-y-4">
+                                        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                                            <div className="flex justify-between items-center mb-4 border-b pb-2">
+                                                <h3 className="text-md font-bold text-slate-700">3. 選擇送估銀行</h3>
+                                                {isEditingRates ? (
+                                                    <button onClick={saveEditedRates} className="text-xs bg-green-500 text-white px-3 py-1.5 rounded hover:bg-green-600 shadow-sm font-bold flex items-center gap-1 transition">
+                                                        <CheckCircle size={14}/> 完成儲存
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => setIsEditingRates(true)} className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 font-bold bg-blue-50 px-2 py-1.5 rounded transition">
+                                                        <Edit2 size={14}/> 快速編輯/新增銀行
+                                                    </button>
+                                                )}
+                                            </div>
+                                            
+                                            {isEditingRates ? (
+                                                <div id="edit-bank-container" className="space-y-2 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
+                                                    {bankData.appraisalBanks.map((bank, idx) => (
+                                                        <div key={idx} className="flex items-center gap-2 text-sm bg-white p-2 rounded border border-gray-200 shadow-sm hover:border-blue-300 transition-colors">
+                                                            <input 
+                                                                type="text" 
+                                                                value={bank.name} 
+                                                                onChange={(e) => handleBankEdit(idx, 'name', e.target.value)}
+                                                                className="w-24 font-bold text-blue-800 p-1.5 border rounded focus:ring-2 focus:ring-blue-500 bg-blue-50/50"
+                                                                placeholder="銀行名稱"
+                                                            />
+                                                            <input 
+                                                                type="text" 
+                                                                value={bank.rate} 
+                                                                onChange={(e) => handleBankEdit(idx, 'rate', e.target.value)}
+                                                                className="flex-1 p-1.5 border rounded focus:ring-2 focus:ring-blue-500 text-xs text-gray-600"
+                                                                placeholder="（輸入完整利率文字含括號）"
+                                                            />
+                                                            <button onClick={() => handleRemoveBank(idx)} className="text-red-400 hover:text-red-600 p-1 bg-red-50 rounded" title="刪除此銀行">
+                                                                <X size={16} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                    <button onClick={handleAddBank} className="w-full mt-3 py-2 border-2 border-dashed border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 hover:border-blue-400 font-bold text-sm flex justify-center items-center gap-2 transition">
+                                                        <PlusCircle size={16} /> 新增銀行
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                    {bankData.appraisalBanks.map((bank, idx) => {
+                                                        const isSelected = appraisalForm.selectedBanks.includes(bank.name);
+                                                        return (
+                                                            <div 
+                                                                key={idx} 
+                                                                onClick={() => toggleAppraisalBank(bank.name)}
+                                                                className={`cursor-pointer border rounded p-2 text-center text-sm transition-all select-none flex flex-col justify-center
+                                                                    ${isSelected ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-md transform scale-105' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}
+                                                                `}
+                                                            >
+                                                                {bank.name}
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="bg-slate-800 rounded-xl shadow-sm p-5 relative group">
+                                            <div className="flex justify-between items-center mb-3">
+                                                <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
+                                                    <Edit2 size={16}/> 即時預覽與編輯 (可直接打字修改)
+                                                </h3>
+                                                <span className="text-xs text-slate-500">修改左側選項會重新覆蓋此處</span>
+                                            </div>
+                                            <textarea 
+                                                className="w-full h-64 bg-slate-900 text-green-400 p-4 rounded font-mono text-sm border border-slate-700 focus:border-green-500 focus:ring-1 focus:ring-green-500 resize-none leading-relaxed custom-scrollbar shadow-inner transition-colors"
+                                                value={previewText}
+                                                onChange={(e) => setPreviewText(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Tab: Assessment (客戶 KYC 評估) */}
                         {activeTab === 'assessment' && (
                             <div className="max-w-6xl mx-auto space-y-6">
-                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                    <h2 className="text-2xl font-bold text-slate-800">客戶案件評估 (KYC)</h2>
-                                    <button onClick={generateCopyText} className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded flex items-center gap-2 text-sm shadow">
-                                        <CheckCircle size={18} /> 匯出結果文字
-                                    </button>
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-slate-800">客戶 KYC 評估</h2>
+                                        <p className="text-sm text-gray-500 mt-1">智慧關鍵字分析引擎 2.0 (已支援 v5.2 格式與模糊解析)</p>
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    {/* 輸入區 */}
                                     <div className="lg:col-span-1 space-y-4">
-                                        {/* 智慧匯入 */}
                                         <div className="bg-blue-50 p-4 rounded-xl border border-blue-200 shadow-sm">
                                             <h3 className="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
-                                                <FileText size={16}/> 智慧匯入 (貼上客戶回傳資料)
+                                                <FileText size={16}/> 智慧匯入 (關鍵字解析)
                                             </h3>
                                             <textarea 
-                                                className="w-full p-2 text-xs border border-blue-200 rounded h-24 focus:ring-2 focus:ring-blue-400 mb-2"
-                                                placeholder="在此貼上客戶回傳的文字..."
+                                                className="w-full p-2 text-xs border border-blue-200 rounded h-32 focus:ring-2 focus:ring-blue-400 mb-2"
+                                                placeholder="將任意格式的客戶資料貼上，Nexus 會運用關鍵字為您抓取..."
                                                 value={importText}
                                                 onChange={(e) => setImportText(e.target.value)}
                                             />
@@ -512,11 +754,10 @@
                                                 onClick={handleParseText}
                                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-bold flex justify-center items-center gap-2 shadow"
                                             >
-                                                <ArrowDownCircle size={16} /> 解析並填入表單
+                                                <ArrowDownCircle size={16} /> 執行解析並填入表單
                                             </button>
                                         </div>
 
-                                        {/* 表單 */}
                                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                                             <h3 className="text-lg font-bold mb-4 border-b pb-2 flex items-center gap-2">
                                                 <Users size={18} /> 客戶基本資料
@@ -544,16 +785,16 @@
                                                 <div className="grid grid-cols-2 gap-2">
                                                     <div>
                                                          <label className="block text-gray-600 mb-1 font-bold">月收 (萬)</label>
-                                                         <input type="number" name="monthlyIncome" value={formData.monthlyIncome} onChange={handleInputChange} className="w-full p-2 border rounded focus:ring-blue-500" />
+                                                         <input type="number" name="monthlyIncome" value={formData.monthlyIncome} onChange={handleInputChange} className="w-full p-2 border rounded focus:ring-blue-500 bg-yellow-50" />
                                                     </div>
                                                     <div>
-                                                         <label className="block text-gray-600 mb-1 font-bold">年收 (萬)</label>
-                                                         <input type="number" name="annualIncome" value={formData.annualIncome} onChange={handleInputChange} className="w-full p-2 border rounded focus:ring-blue-500 bg-yellow-50" />
+                                                         <label className="block text-gray-600 mb-1 font-bold">年齡</label>
+                                                         <input type="number" name="age" value={formData.age} onChange={handleInputChange} className="w-full p-2 border rounded focus:ring-blue-500" />
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <label className="block text-gray-600 mb-1 font-bold">資產狀況</label>
-                                                    <select name="assets" value={formData.assets} onChange={handleInputChange} className="w-full p-2 border rounded bg-gray-50">
+                                                    <select name="assets" value={formData.assets} onChange={handleInputChange} className="w-full p-2 border rounded bg-yellow-50 focus:ring-blue-500">
                                                         {ASSET_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                                     </select>
                                                 </div>
@@ -576,10 +817,11 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-gray-600 mb-1 font-bold">負債總額 (萬)</label>
-                                                    <input type="number" name="debtAmount" value={formData.debtAmount} onChange={handleInputChange} className="w-full p-2 border rounded" />
+                                                    <label className="block text-gray-600 mb-1 font-bold">負債總額估算 (萬)</label>
+                                                    <input type="number" name="debtAmount" value={formData.debtAmount} onChange={handleInputChange} className="w-full p-2 border rounded bg-yellow-50 focus:ring-blue-500" />
                                                 </div>
                                                 
+                                                {/* 這裡就是被誤刪並已修復的 UI 區塊 */}
                                                 <div className="border-t pt-4 mt-4">
                                                     <h4 className="font-bold mb-2">特殊需求與產品</h4>
                                                     <div className="space-y-3">
@@ -601,22 +843,20 @@
                                                         </div>
                                                         <label className="flex items-center gap-3 cursor-pointer bg-slate-50 p-2 rounded hover:bg-slate-100 transition">
                                                             <input type="checkbox" name="needsRenovation" checked={formData.needsRenovation} onChange={handleInputChange} className="w-4 h-4" />
-                                                            <span className="text-sm">需要裝潢貸款</span>
+                                                            <span className="text-sm font-bold text-gray-700">需要裝潢貸款</span>
                                                         </label>
                                                         <label className="flex items-center gap-3 cursor-pointer bg-slate-50 p-2 rounded hover:bg-slate-100 transition">
                                                             <input type="checkbox" name="needsNoTieIn" checked={formData.needsNoTieIn} onChange={handleInputChange} className="w-4 h-4" />
-                                                            <span className="text-sm">希望不綁約</span>
+                                                            <span className="text-sm font-bold text-gray-700">希望不綁約</span>
                                                         </label>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* 分析結果 */}
                                     <div className="lg:col-span-2 space-y-6">
-                                        
-                                        {/* 儀表板 */}
                                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                                             <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-blue-800">
                                                 <TrendingUp size={20} /> 初步財務比率 (Pro)
@@ -627,7 +867,6 @@
                                                     <p className="text-2xl font-bold text-blue-900">
                                                         {formData.price > 0 ? ((formData.loanAmount / formData.price) * 100).toFixed(1) : 0}%
                                                     </p>
-                                                    <p className="text-xs text-blue-500 mt-1">建議控制在 80% 內</p>
                                                 </div>
                                                 <div className="bg-green-50 p-4 rounded-lg">
                                                     <p className="text-xs text-green-600 font-bold uppercase">DBR 收支比估算</p>
@@ -636,22 +875,17 @@
                                                             ? Math.round(((calculateMonthlyPayment() * 10000 + (formData.debtAmount * 0.02 * 10000 || 0)) / (formData.monthlyIncome * 10000)) * 100)
                                                             : 0}%
                                                     </p>
-                                                    <p className="text-xs text-green-500 mt-1">含房貸+負債(估2%)<br/>(分子/月收)</p>
+                                                    <p className="text-xs text-green-500 mt-1">含房貸+負債</p>
                                                 </div>
                                                 <div className="bg-purple-50 p-4 rounded-lg">
                                                     <p className="text-xs text-purple-600 font-bold uppercase">本息攤還試算</p>
                                                     <p className="text-2xl font-bold text-purple-900">
                                                         {calculateMonthlyPayment()} <span className="text-sm">萬/月</span>
                                                     </p>
-                                                    <p className="text-xs text-purple-500 mt-1">利率2.2% / 30年</p>
                                                 </div>
-                                            </div>
-                                            <div className="text-right mt-2 text-xs text-gray-400">
-                                                * 您將試算邏輯升級為更精準的「本息攤還」模型
                                             </div>
                                         </div>
 
-                                        {/* 推薦列表 */}
                                         <div>
                                             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                                                 <CheckCircle size={20} className="text-green-600" /> 
@@ -702,11 +936,30 @@
                             </div>
                         )}
 
-                        {/* Tab: Knowledge */}
+                        {/* 🌟 Tab: Knowledge (銀行方案大全 - 一字不漏完整還原版) */}
                         {activeTab === 'knowledge' && (
                             <div className="max-w-4xl mx-auto space-y-8">
                                 <h2 className="text-2xl font-bold text-slate-800 border-b pb-4">銀行方案知識庫</h2>
                                 
+                                <section>
+                                    <h3 className="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+                                        <Briefcase /> 首購 / 一般受薪 專案
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {bankData.firstTime.map((bank, idx) => (
+                                            <div key={idx} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow border-l-4 border-l-blue-500">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className="font-bold text-lg">{bank.name}</span>
+                                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{bank.highlight}</span>
+                                                </div>
+                                                <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                                    {bank.rules.map((rule, rIdx) => <li key={rIdx}>{rule}</li>)}
+                                                </ul>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
                                 <section>
                                     <h3 className="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
                                         <Briefcase /> 自營商/負責人 收入認定
@@ -795,14 +1048,13 @@
                                     <AlertCircle size={20} className="shrink-0" />
                                     <div>
                                         <p className="font-bold">注意：</p>
-                                        <p>此處允許編輯系統邏輯。修改後請按「儲存」，資料將保存在此設備的瀏覽器中。</p>
+                                        <p>此處允許編輯系統底層邏輯原始碼 (JSON)。一般修改利率請至「估價回覆產生器」使用快速編輯即可。</p>
                                     </div>
                                 </div>
                                 
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                                    <label className="block mb-2 font-bold text-gray-700">資料庫原始碼 (JSON)</label>
                                     <textarea 
-                                        className="w-full h-96 font-mono text-sm p-4 border rounded bg-slate-50 focus:ring-2 focus:ring-blue-500"
+                                        className="w-full h-96 font-mono text-sm p-4 border rounded bg-slate-50 focus:ring-2 focus:ring-blue-500 custom-scrollbar"
                                         value={JSON.stringify(bankData, null, 2)}
                                         onChange={(e) => {
                                             try {
@@ -818,7 +1070,7 @@
                                         <Save size={20} /> 儲存變更
                                     </button>
                                     <button onClick={handleResetData} className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-bold">
-                                        <RotateCcw size={20} /> 重置回預設值
+                                        <RotateCcw size={20} /> 恢復原廠預設值
                                     </button>
                                 </div>
                             </div>
